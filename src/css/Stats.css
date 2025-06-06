@@ -1,0 +1,27 @@
+.stats-header-card {
+  background: #e6deff;
+  border-radius: 15px;
+  padding: 16px 32px;
+  margin: 20px 0 36px 0;
+  max-width: 390px;
+  box-shadow: 0 1px 4px #d6cff7;
+  color: #442782;
+  font-weight: 600;
+  font-size: 1.07rem;
+}
+
+.stats-highlight {
+  background: #f3e7ff;
+  font-weight: bold;
+  border-radius: 10px;
+  padding: 4px 16px;
+  margin-top: 6px;
+  display: inline-block;
+  color: #8d5eff;
+}
+.stats-charts-group {
+  display: flex;
+  gap: 36px;
+  flex-wrap: wrap;
+  justify-content: center; /* 가로 중앙정렬 */
+}
