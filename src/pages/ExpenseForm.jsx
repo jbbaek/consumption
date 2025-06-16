@@ -27,6 +27,7 @@ export default function ExpenseForm() {
   const [category, setCategory] = useState(CATEGORY_OPTIONS[0]);
   const [amount, setAmount] = useState("");
   const [memo, setMemo] = useState("");
+  const [isFixed, setIsFixed] = useState(false); // 고정지출 상태
 
   // editId가 바뀔 때 해당 항목으로 값 채우기
   useEffect(() => {
@@ -37,6 +38,7 @@ export default function ExpenseForm() {
         setCategory(item.category);
         setAmount(item.amount.toString());
         setMemo(item.memo);
+        setIsFixed(item.isFixed || false); // 고정지출값도 불러오기
       }
     }
   }, [editId, expenses]);
@@ -49,28 +51,32 @@ export default function ExpenseForm() {
       setExpenses(
         expenses.map((item) =>
           item.id === editId
-            ? { ...item, date, category, amount: +amount, memo }
+            ? { ...item, date, category, amount: +amount, memo, isFixed }
             : item
         )
       );
-      setEditId(null); // 수정 모드 종료
+      setEditId(null);
     } else {
       const id = Date.now() + Math.random();
-      setExpenses([...expenses, { id, date, category, amount: +amount, memo }]);
+      setExpenses([
+        ...expenses,
+        { id, date, category, amount: +amount, memo, isFixed },
+      ]);
     }
     setDate(getToday());
     setCategory(CATEGORY_OPTIONS[0]);
     setAmount("");
     setMemo("");
+    setIsFixed(false);
   };
 
-  // 취소 버튼(수정 중일 때만)
   const handleCancel = () => {
     setEditId(null);
     setDate(getToday());
     setCategory(CATEGORY_OPTIONS[0]);
     setAmount("");
     setMemo("");
+    setIsFixed(false);
   };
 
   return (
@@ -105,6 +111,14 @@ export default function ExpenseForm() {
         value={memo}
         onChange={(e) => setMemo(e.target.value)}
       />
+      <label style={{ marginLeft: 10, marginRight: 8, fontSize: 15 }}>
+        <input
+          type="checkbox"
+          checked={isFixed}
+          onChange={() => setIsFixed((v) => !v)}
+        />{" "}
+        고정지출
+      </label>
       <button type="submit">{editId ? "수정" : "저장"}</button>
       {editId && (
         <button

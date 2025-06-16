@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   PieChart,
   Pie,
@@ -15,29 +15,57 @@ import { ExpenseContext } from "../App";
 import "../css/Stats.css";
 
 const CATEGORY_COLORS = [
-  "#A9BCD0",
-  "#FFBB28",
-  "#FF8042",
-  "#AA336A",
-  "#0088FE",
-  "#00C49F",
+  "#ffb3ba",
+  "#2bf211",
+  "#1120f2",
+  "#f2c911",
+  "#ffdfba",
+  "#cba6ff",
+  "#ffd6e0",
+  "#a6e3e9",
+];
+
+const BAR_COLORS = [
+  "#f1712c",
+  "#f3e629",
+  "#2af2c4",
+  "#e4c1f9",
+  "#ffb7b2",
+  "#b5ead7",
+  "#fff1c1",
+  "#c4fae8",
 ];
 
 export default function Stats() {
   const { expenses } = useContext(ExpenseContext);
 
-  // 카테고리별 합계
+  // 월별 목록 만들기 (중복 제거)
+  const monthList = [
+    ...new Set(expenses.map((e) => e.date?.slice(0, 7)).filter(Boolean)),
+  ].sort((a, b) => b.localeCompare(a));
+
+  // 드롭다운 상태 (기본: 최신월)
+  const [selectedMonth, setSelectedMonth] = useState(
+    monthList[0] || new Date().toISOString().slice(0, 7)
+  );
+
+  // 월별 필터
+  const filtered = expenses.filter(
+    (e) => e.date?.slice(0, 7) === selectedMonth
+  );
+
+  // 카테고리별 합계 데이터
   const categoryData = Object.entries(
-    expenses.reduce((acc, cur) => {
-      acc[cur.category] = (acc[cur.category] || 0) + cur.amount;
+    filtered.reduce((acc, cur) => {
+      acc[cur.category] = (acc[cur.category] || 0) + Number(cur.amount);
       return acc;
     }, {})
   ).map(([name, value]) => ({ name, value }));
 
-  // 날짜별 합계
+  // 날짜별 합계 데이터
   const dateData = Object.entries(
-    expenses.reduce((acc, cur) => {
-      acc[cur.date] = (acc[cur.date] || 0) + cur.amount;
+    filtered.reduce((acc, cur) => {
+      acc[cur.date] = (acc[cur.date] || 0) + Number(cur.amount);
       return acc;
     }, {})
   )
@@ -45,52 +73,52 @@ export default function Stats() {
     .sort((a, b) => a.date.localeCompare(b.date));
 
   // 최다 소비 카테고리
-  const maxCategory = categoryData.reduce(
-    (max, cur) => (cur.value > (max?.value || 0) ? cur : max),
-    null
-  );
+  const maxCategory =
+    categoryData.length > 0
+      ? categoryData.reduce((max, cur) => (cur.value > max.value ? cur : max))
+      : null;
 
-  // 이번 달 총합/평균
-  const now = new Date();
-  const monthStr = now.toISOString().slice(0, 7);
-  const expensesThisMonth = expenses.filter(
-    (e) => e.date.slice(0, 7) === monthStr
-  );
-  const totalMonth = expensesThisMonth.reduce(
-    (sum, cur) => sum + cur.amount,
-    0
-  );
-  const daysInMonth = new Date(
-    now.getFullYear(),
-    now.getMonth() + 1,
-    0
-  ).getDate();
-  const avgPerDay = daysInMonth ? (totalMonth / daysInMonth).toFixed(0) : 0;
+  // 이번 달 총 지출
+  const totalMonth = filtered.reduce((sum, cur) => sum + Number(cur.amount), 0);
+
+  const fixedExpenses = filtered.filter((e) => e.isFixed);
+  // 고정지출 카테고리별 합계
+  const fixedCategoryData = Object.entries(
+    fixedExpenses.reduce((acc, cur) => {
+      acc[cur.category] = (acc[cur.category] || 0) + Number(cur.amount);
+      return acc;
+    }, {})
+  ).map(([name, value]) => ({ name, value }));
 
   return (
     <div className="container-main">
       <h2>소비 분석</h2>
-      <div
-        style={{
-          background: "#DCE3EA",
-          borderRadius: 14,
-          padding: 16,
-          margin: "16px 0",
-          maxWidth: 380,
-        }}
-      >
-        <div>
-          이번 달 총 지출: <b>{totalMonth.toLocaleString()}원</b>
-        </div>
-        <div>
-          일 평균 소비: <b>{avgPerDay}원</b>
-        </div>
+      {/* 월별 드롭다운 */}
+      <div className="stats-month-filter stylish-dropdown">
+        <label htmlFor="month-select">월별 선택:</label>
+        <select
+          id="month-select"
+          value={selectedMonth}
+          onChange={(e) => setSelectedMonth(e.target.value)}
+        >
+          {monthList.map((month) => (
+            <option key={month} value={month}>
+              {month}월
+            </option>
+          ))}
+        </select>
       </div>
-      <div style={{ display: "flex", gap: 36, flexWrap: "wrap" }}>
+      {/* 카드형 합계 */}
+      <div className="stats-header-card card">
+        이번 달 총 지출:{" "}
+        <span className="stat-number-animate">
+          {totalMonth.toLocaleString()}원
+        </span>
+      </div>
+      <div className="stats-charts-group">
+        {/* Pie Chart */}
         <div>
-          <div style={{ marginBottom: 8, fontWeight: "bold" }}>
-            카테고리별 소비 (PieChart)
-          </div>
+          <div className="stats-highlight">카테고리별 소비 (PieChart)</div>
           <PieChart width={340} height={250}>
             <Pie
               dataKey="value"
@@ -98,7 +126,6 @@ export default function Stats() {
               cx={160}
               cy={110}
               outerRadius={70}
-              fill="#A9BCD0"
               label
             >
               {categoryData.map((entry, idx) => (
@@ -120,32 +147,68 @@ export default function Stats() {
             <Legend />
           </PieChart>
           {maxCategory && (
-            <div
-              style={{
-                background: "#FFE066",
-                fontWeight: "bold",
-                borderRadius: "8px",
-                padding: "2px 12px",
-                marginTop: 6,
-                display: "inline-block",
-              }}
-            >
+            <div className="stats-best-category stat-number-animate">
               최다 소비 카테고리: {maxCategory.name} (
               {maxCategory.value.toLocaleString()}원)
             </div>
           )}
         </div>
+        {/* Bar Chart */}
         <div>
-          <div style={{ marginBottom: 8, fontWeight: "bold" }}>
-            날짜별 소비 (BarChart)
-          </div>
+          <div className="stats-highlight">날짜별 소비 (BarChart)</div>
           <BarChart width={340} height={250} data={dateData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="date" />
             <YAxis />
             <Tooltip />
-            <Bar dataKey="value" fill="#A9BCD0" />
+            <Bar dataKey="value">
+              {dateData.map((entry, idx) => (
+                <Cell
+                  key={entry.date}
+                  fill={BAR_COLORS[idx % BAR_COLORS.length]}
+                />
+              ))}
+            </Bar>
+            <Legend />
           </BarChart>
+        </div>
+        <div>
+          <div className="stats-highlight" style={{ marginTop: 18 }}>
+            고정지출 카테고리별 (PieChart)
+          </div>
+          <PieChart width={340} height={250}>
+            <Pie
+              dataKey="value"
+              data={fixedCategoryData}
+              cx={160}
+              cy={110}
+              outerRadius={70}
+              label
+            >
+              {fixedCategoryData.map((entry, idx) => (
+                <Cell
+                  key={entry.name}
+                  fill={CATEGORY_COLORS[idx % CATEGORY_COLORS.length]}
+                  stroke="#fff"
+                  strokeWidth={1}
+                />
+              ))}
+            </Pie>
+            <Tooltip />
+            <Legend />
+          </PieChart>
+          {fixedCategoryData.length === 0 && (
+            <div
+              style={{
+                color: "#bbb",
+                textAlign: "center",
+                fontSize: "1.03rem",
+                marginTop: 15,
+              }}
+            >
+              이번 달 고정지출 내역이 없습니다.
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -3,6 +3,9 @@
   gap: 10px;
   margin-bottom: 18px;
   flex-wrap: wrap;
+  /* ↓↓↓ 추가 ↓↓↓ */
+  justify-content: center; /* 가로 가운데 */
+  align-items: center; /* 세로 가운데 (한 줄일 때) */
   width: 100vw;
   box-sizing: border-box;
   padding-left: 0;
@@ -13,15 +16,15 @@
 .expense-form input[type="text"],
 .expense-form input[type="number"] {
   padding: 7px 10px;
-  border: 1.2px solid #bfa6f4;
+  border: 1.2px solid #38b6ff;
   border-radius: 8px;
   font-size: 1rem;
-  background: #f8f4ff;
+  background: white;
   color: #3d3b4f;
 }
 .expense-form button {
-  background: #bfa6f4;
-  color: #fff;
+  background: #cce3f8;
+  color: black;
   border: none;
   border-radius: 8px;
   font-weight: bold;
@@ -31,14 +34,73 @@
   transition: background 0.17s;
 }
 .expense-form button:hover {
-  background: #a07dfe;
+  background: #cce3f8;
 }
 .expense-form select {
   padding: 7px 10px;
-  border: 1.2px solid #bfa6f4;
+  border: 1.2px solid #38b6ff;
   border-radius: 8px;
   font-size: 1rem;
-  background: #f8f4ff;
+  background: white;
   color: #3d3b4f;
   min-width: 110px;
+}
+.expense-form input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #38b6ff;
+  border-radius: 5px;
+  background: #fff;
+  position: relative;
+  margin-right: 5px;
+  vertical-align: middle;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+/* 체크된 경우 */
+.expense-form input[type="checkbox"]:checked {
+  background: #38b6ff;
+  border-color: #2592cc;
+}
+
+/* 체크박스 안에 체크(✔) 표시 */
+.expense-form input[type="checkbox"]:checked::after {
+  content: "✔";
+  color: #fff;
+  font-size: 13px;
+  font-weight: bold;
+  position: relative;
+  left: 3px;
+  top: -1px;
+  width: 18px;
+  height: 18px;
+  text-align: center;
+  line-height: 18px;
+  pointer-events: none;
+}
+
+.expense-form label[for="fixed-expense"] {
+  margin-left: 10px;
+  margin-right: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #38b6ff;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* 반응형 (모바일) */
+@media (max-width: 600px) {
+  .expense-form label[for="fixed-expense"] {
+    font-size: 13px;
+    margin-left: 5px;
+  }
+  .expense-form input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+  }
 }

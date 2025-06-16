@@ -1,13 +1,13 @@
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
-library.add(faStar);
+import { faAnchor } from "@fortawesome/free-solid-svg-icons"; // 고정지출 아이콘!
+library.add(faAnchor);
 
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Stats from "./pages/Stats";
-import Favorite from "./pages/Favorite";
-import NavBar from "./components/navbar"; // NavBar 별도 파일
+import FixedExpense from "./pages/FixedExpense";
+import NavBar from "./components/navbar";
 import "./App.css";
 
 export const ExpenseContext = React.createContext();
@@ -22,26 +22,17 @@ function saveExpenses(expenses) {
 
 function App() {
   const [expenses, setExpenses] = useState(loadExpenses());
-  const [favoriteIds, setFavoriteIds] = useState(() => {
-    const fav = localStorage.getItem("favorites");
-    return fav ? JSON.parse(fav) : [];
-  });
-  const [editId, setEditId] = useState(null); // ⬅️ 수정 항목 ID
+  const [editId, setEditId] = useState(null);
 
   useEffect(() => {
     saveExpenses(expenses);
   }, [expenses]);
-  useEffect(() => {
-    localStorage.setItem("favorites", JSON.stringify(favoriteIds));
-  }, [favoriteIds]);
 
   return (
     <ExpenseContext.Provider
       value={{
         expenses,
         setExpenses,
-        favoriteIds,
-        setFavoriteIds,
         editId,
         setEditId,
       }}
@@ -51,7 +42,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/stats" element={<Stats />} />
-          <Route path="/favorite" element={<Favorite />} />
+          <Route path="/fixed" element={<FixedExpense />} />
         </Routes>
       </Router>
     </ExpenseContext.Provider>

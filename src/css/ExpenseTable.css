@@ -1,8 +1,8 @@
 .expense-table {
-  width: 100%;
-  background: #f0ebff;
+  width: 1000px;
+  background: #fff;
   border-radius: 14px;
-  box-shadow: 0 2px 10px #e3dbff;
+  box-shadow: 0 2px 10px #b3e0ff;
   border-collapse: separate;
   border-spacing: 0;
   margin-bottom: 38px;
@@ -14,45 +14,52 @@
 .expense-table td {
   padding: 13px 16px;
   text-align: center;
-  border-bottom: 1.5px solid #e6deff;
+  border-bottom: 1.5px solid #bae1ff;
 }
 
 .expense-table th {
-  background: #c9b6f7;
-  color: #442782;
+  background: #cce3f8;
+  color: #0d335d;
   font-weight: 700;
-  border-bottom: 2.5px solid #bfa6f4;
+  border-bottom: 2.5px solid #38b6ff;
   font-size: 1.07rem;
 }
 
 .expense-table tbody tr:nth-child(even) {
-  background: #f8f4ff;
+  background: #e0f7fa;
 }
 .expense-table tbody tr:nth-child(odd) {
-  background: #e6deff;
+  background: #f7faff;
 }
-.expense-table tr.favorite-row {
-  background: #f3e7ff !important;
-}
-
-.btn-favorite {
-  background: #bfa6f4;
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  cursor: pointer;
-  font-size: 1.05em;
-  transition: background 0.15s;
-}
-.btn-favorite.active {
-  background: #a07dfe;
+.expense-table tr.fixed-row {
+  background: #fff8e1 !important; /* 고정비 강조: 밝은 노랑 */
 }
 
+/* 드롭다운(날짜 필터) 스타일 */
+.expense-table-date-filter,
+.expense-table-date-filter select {
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+.expense-table-date-filter select {
+  padding: 7px 16px;
+  border-radius: 7px;
+  border: 1.6px solid #38b6ff;
+  background: #f7faff;
+  color: #116ba5;
+  outline: none;
+  transition: border 0.18s;
+}
+.expense-table-date-filter select:focus {
+  border: 2px solid #38b6ff;
+  background: #e0f7fa;
+}
+
+/* 버튼 꾸미기 */
 .btn-edit {
-  background: #d6cff7;
-  color: #3d3b4f;
+  background: #b5ead7;
+  color: #212121;
   border: none;
   border-radius: 7px;
   padding: 2px 12px;
@@ -61,12 +68,11 @@
   transition: background 0.16s;
 }
 .btn-edit:hover {
-  background: #bfa6f4;
+  background: #56cfe1;
   color: #fff;
 }
-
 .btn-delete {
-  background: #a07dfe;
+  background: #ff6f91;
   color: #fff;
   border: none;
   border-radius: 7px;
@@ -76,14 +82,29 @@
   transition: background 0.13s;
 }
 .btn-delete:hover {
-  background: #442782;
+  background: #c9184a;
 }
 
-/* 모바일 반응형 */
+/* 드롭다운과 테이블 사이 여백 조정 */
+.expense-table-date-filter {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 10px;
+  margin-top: 2px;
+}
+
 @media (max-width: 600px) {
   .expense-table th,
   .expense-table td {
     padding: 7px 7px;
     font-size: 0.94rem;
+  }
+  .expense-table-date-filter,
+  .expense-table-date-filter select {
+    font-size: 0.95rem;
+  }
+  .expense-table-date-filter select {
+    padding: 6px 10px;
   }
 }

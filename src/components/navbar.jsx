@@ -15,10 +15,10 @@ export default function NavBar() {
         소비분석
       </NavLink>
       <NavLink
-        to="/favorite"
+        to="/Fixed"
         className={({ isActive }) => (isActive ? "active" : "")}
       >
-        즐겨찾기
+        고정지출
       </NavLink>
     </nav>
   );

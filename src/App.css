@@ -1,21 +1,21 @@
 body {
-  background: white;
+  background: #eaf7ff;
   font-family: "Pretendard", "Noto Sans KR", Arial, sans-serif;
-  color: #3d3b4f;
+  color: #1e5077;
   margin: 0;
   width: 100vw;
   min-height: 100vh;
 }
 
 nav {
-  background: #e6deff;
+  background: #cce3f8;
   display: flex;
   gap: 18px;
   padding: 18px 32px;
   font-weight: 600;
   font-size: 1.1rem;
   margin-bottom: 0;
-  border-bottom: 2px solid #c9b6f7;
+  border-bottom: 2px solid #2592cc;
   width: 100vw;
   box-sizing: border-box;
   position: sticky;
@@ -24,22 +24,22 @@ nav {
 }
 
 nav a {
-  color: #442782;
+  color: #1e5077;
   text-decoration: none;
-  transition: color 0.18s;
+  transition: color 0.18s, background 0.18s;
   padding: 2px 8px;
   border-radius: 7px;
 }
 
 nav a.active {
-  background: #bfa6f4;
+  background: #2592cc;
   color: #fff;
 }
 
 .container-main {
   width: 100vw;
   min-height: 80vh;
-  background: white;
+  background: #eaf7ff;
   border-radius: 0;
   margin: 0;
   padding: 0 0 36px 0;
